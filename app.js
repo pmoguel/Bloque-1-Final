@@ -17,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1
 
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
- const geo = new THREE.SphereGeometry(1.5, 128, 128);
+ const geo = new THREE.IcosahedronGeometry(1, 0);
 
 const material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
@@ -66,12 +66,12 @@ const loader = new THREE.TextureLoader(manager);
 
 // 3. Cargamos texturas guardadas en el folder del proyecto.
 const tex = {
-   albedo: loader.load('./assets/texturas/bricks/albedo.png'),
-   ao: loader.load('./assets/texturas/bricks/ao.png'),
-   metalness: loader.load('./assets/texturas/bricks/metallic.png'),
-   normal: loader.load('./assets/texturas/bricks/normal.png'),
-   roughness: loader.load('./assets/texturas/bricks/roughness.png'),
-   displacement: loader.load('./assets/texturas/bricks/displacement.png'),
+   albedo: loader.load('./assets/texturas/powder/powder-coated-metal_albedo.png'),
+   ao: loader.load('./assets/texturas/powder/powder-coated-metal_ao.png'),
+   metalness: loader.load('./assets/texturas/powder/powder-coated-metal_metallic.png'),
+   normal: loader.load('./assets/texturas/powder/powder-coated-metal_normal.png'),
+   roughness: loader.load('./assets/texturas/powder/powder-coated-metal_roughness.png'),
+   //displacement: loader.load('./assets/texturas/powder/displacement.png'),
 };
 
 // 4. Definimos variables y la función que va a crear el material al cargar las texturas.
