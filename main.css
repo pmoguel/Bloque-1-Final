@@ -59,3 +59,39 @@ footer {
     right: 2.2vh;
     width: 10vh;
 }
+
+.botonera {
+    position: absolute;
+    left: 2vh;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+}
+
+.boton {
+    width: 10vh;
+    height: 10vh;
+    border: none;
+    background-color: transparent;
+    font-size: 2vh;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.boton:hover {
+    transform: scale(1.1);
+}
+
+.uno {
+    background-color: #e63946; /* rojo coral */
+    margin-top: 5px; /* 5px abajo del centro */
+}
+
+.dos {
+    background-color: #2a9d8f; /* verde azulado */
+    margin-bottom: 5px; /* 5px arriba del centro */
+}
