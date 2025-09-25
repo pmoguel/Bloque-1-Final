@@ -185,3 +185,13 @@ function animate() {
 }
 
 animate();
+
+canvas.addEventListener("click", () => {
+    gsap.to(mesh.scale, {
+        x: mesh.scale.x + 0.3,
+        y: mesh.scale.y + 0.3,
+        z: mesh.scale.z + 0.3,
+        duration: 1.2,
+        ease: "bounce.out"
+    });
+});
