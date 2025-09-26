@@ -17,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1
 
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
- const geo = new THREE.IcosahedronGeometry(1, 0);
+ const geo = new THREE.TorusGeometry( 1, 0.35, 80, 160 ); 
 
 const material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
@@ -65,32 +65,62 @@ manager.onError = function (url) {
 const loader = new THREE.TextureLoader(manager);
 
 // 3. Cargamos texturas guardadas en el folder del proyecto.
-const tex = {
-   albedo: loader.load('./assets/texturas/powder/powder-coated-metal_albedo.png'),
-   ao: loader.load('./assets/texturas/powder/powder-coated-metal_ao.png'),
-   metalness: loader.load('./assets/texturas/powder/powder-coated-metal_metallic.png'),
-   normal: loader.load('./assets/texturas/powder/powder-coated-metal_normal.png'),
-   roughness: loader.load('./assets/texturas/powder/powder-coated-metal_roughness.png'),
-   //displacement: loader.load('./assets/texturas/powder/displacement.png'),
+
+const iceTexture = {
+   albedo: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Albedo.png'),
+   ao: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_AO.png'),
+   metalness: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Metallic.png'),
+   normal: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Normal-ogl.png'),
+   roughness: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Roughness.png'),
+   displacement: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Height.png'),
 };
 
+const paperTexture = {
+   albedo: loader.load('./assets/texturas/paper/wrinkled-paper-albedo.png'),
+   ao: loader.load('./assets/texturas/paper/wrinkled-paper-ao.png'),
+   metalness: loader.load('./assets/texturas/paper/wrinkled-paper-metalness.png'),
+   normal: loader.load('./assets/texturas/paper/wrinkled-paper-normal-ogl.png'),
+   roughness: loader.load('./assets/texturas/paper/wrinkled-paper-roughness.png'),
+   displacement: loader.load('./assets/texturas/paper/wrinkled-paper-height.png'),
+};
+
+/*
+const tex = {
+   albedo: loader.load('./assets/texturas/Grid/vented-metal-panel1_albedo.png'),
+   ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
+   metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'),
+   normal: loader.load('./assets/texturas/Grid/vented-metal-panel1_normal-ogl.png'),
+   //roughness: loader.load('./assets/texturas/Grid/vented-metal-panel1_roughness.png'),
+   displacement: loader.load('./assets/texturas/Grid/vented-metal-panel1_height.png'),
+};
+
+const alienTexture = {
+   albedo: loader.load('./assets/texturas/alien/alien-carniverous-plant_albedo.png'),
+   ao: loader.load('./assets/texturas/alien/alien-carniverous-plant_ao.png'),
+   metalness: loader.load('./assets/texturas/alien/alien-carniverous-plant_metallic.png'),
+   normal: loader.load('./assets/texturas/alien/alien-carniverous-plant_normal-ogl.png'),
+   roughness: loader.load('./assets/texturas/alien/alien-carniverous-plant_roughness.png'),
+   displacement: loader.load('./assets/texturas/alien/alien-carniverous-plant_height.png'),
+};
+*/
+
 // 4. Definimos variables y la función que va a crear el material al cargar las texturas.
-var pbrMaterial;
+var iceMaterial;
 
 function createMaterial() {
-   pbrMaterial = new THREE.MeshStandardMaterial({
-       map: tex.normal,
-       aoMap: tex.ao,
-       metalnessMap: tex.metalness,
-       normalMap: tex.normal,
-       roughnessMap: tex.roughness,
-       displacementMap: tex.displacement,
-       displacementScale: 0.4,
+   iceMaterial = new THREE.MeshStandardMaterial({
+       map: iceTexture.albedo,
+       aoMap: iceTexture.ao,
+       metalnessMap: iceTexture.metalness,
+       normalMap: iceTexture.normal,
+       roughnessMap: iceTexture.roughness,
+       displacementMap: iceTexture.displacement,
+       displacementScale: 0.5,
        side: THREE.FrontSide,
-       // wireframe: true,
+       //wireframe: true,
    });
 
-   mesh.material = pbrMaterial;
+   mesh.material = iceMaterial;
 }
 
 //// B) Rotación al scrollear.
@@ -158,15 +188,22 @@ function calculateNormalOffset() {
    mouse.normalOffset.y = ( (mouse.y - windowCenter.y) / canvas.height ) * 2;
 }
 
+
+// a) Suavizar movimiento de cámara.
+// 1. Incrementar gradualmente el valor de la distancia que vamos a usar para animar y lo guardamos en otro atributo. (en el loop de animación)
+
+function lerpDistanceToCenter() {
+   mouse.lerpNormalOffset.x += (mouse.normalOffset.x - mouse.lerpNormalOffset.x) * mouse.cof;
+   mouse.lerpNormalOffset.y += (mouse.normalOffset.y - mouse.lerpNormalOffset.y) * mouse.cof;
+}
+
 window.addEventListener("mousemove", updateMouseData);
 
 // 3. Aplicar valor calculado a la posición de la cámara. (en el loop de animación)
 function updateCameraPosition() {
-   camera.position.x = mouse.normalOffset.x * mouse.gazeRange.x;
-   camera.position.y = -mouse.normalOffset.y * mouse.gazeRange.y;
+   camera.position.x = mouse.lerpNormalOffset.x * mouse.gazeRange.x;
+   camera.position.y = -mouse.lerpNormalOffset.y * mouse.gazeRange.y;
 }
-
-
 ///////// FIN DE LA CLASE.
 
 
@@ -178,10 +215,11 @@ function animate() {
     //mesh.rotation.x -= 0.005;
     lerpScrollY();
     updateMeshRotation();
-    renderer.render(scene, camera);
 
+   lerpDistanceToCenter();
     updateCameraPosition();
   camera.lookAt(mesh.position);
+      renderer.render(scene, camera);
 }
 
 animate();

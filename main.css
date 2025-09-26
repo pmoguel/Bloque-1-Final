@@ -60,38 +60,36 @@ footer {
     width: 10vh;
 }
 
-.botonera {
-    position: absolute;
-    left: 2vh;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 10;
+.materialSwitch {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background-size: cover;
 }
 
-.boton {
-    width: 10vh;
-    height: 10vh;
-    border: none;
-    background-color: transparent;
-    font-size: 2vh;
-    font-weight: bold;
+.materialSwitch:hover {
     cursor: pointer;
-    transition: transform 0.2s ease;
+    outline: 4px solid aqua;
 }
 
-.boton:hover {
-    transform: scale(1.1);
+#iceButton {
+background-image: url('./assets/texturas/ice/rock-snow-ice1-2k_Albedo.png'); ;
 }
 
-.uno {
-    background-color: #e63946; /* rojo coral */
-    margin-top: 5px; /* 5px abajo del centro */
+#paperButton {
+background-image: url('./assets/texturas/paper/wrinkled-paper-albedo.png'); ;
 }
 
-.dos {
-    background-color: #2a9d8f; /* verde azulado */
-    margin-bottom: 5px; /* 5px arriba del centro */
+#materials {
+  position: absolute;
+  top: 50%;
+  left: 2vh;
+  transform: translateY(-50%);
+}
+
+#materials ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
 }
