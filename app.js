@@ -10,10 +10,40 @@ canvas.height = window.innerHeight;
 
 // 3. Configurar escena 3D.
 const scene = new THREE.Scene();
+
+// 3.0.1 AÑADIR COLOR DE FONDO Y NIEBLA <--- MODIFICADO
+const initialBgColor = 0x0a0c2c; // Color original del fondo (#0a0c2c)
+scene.background = new THREE.Color(initialBgColor);
+scene.fog = new THREE.Fog(initialBgColor, 5, 20); // Niebla sutil que coincide con el fondo
+
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.width, canvas.height);
-renderer.setClearColor("#0a0c2c");
+renderer.setClearColor(initialBgColor); // Se mantiene para compatibilidad, aunque 'scene.background' es más común
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
+
+// 3.0.2 SISTEMA DE PARTÍCULAS PARA EL FONDO (NUEVO)
+const particleCount = 1000;
+const particleGeometry = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const particleSize = 0.05;
+
+for (let i = 0; i < particleCount; i++) {
+    // Posiciona las partículas aleatoriamente en un cubo grande alrededor de la escena
+    positions[i * 3] = (Math.random() - 0.5) * 50; // x: -25 a 25
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 50; // y: -25 a 25
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 50; // z: -25 a 25
+}
+
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+const particleMaterial = new THREE.PointsMaterial({
+    color: 0xcccccc,
+    size: particleSize,
+    sizeAttenuation: true, // Las partículas se hacen más pequeñas en la distancia
+});
+
+const particles = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particles);
 
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
@@ -85,7 +115,6 @@ const paperTexture = {
     displacement: loader.load('./assets/texturas/paper/wrinkled-paper-height.png'),
 };
 
-// <--- TEXTURAS DESCOMENTADAS Y RENOMBRADAS A gridTexture
 const gridTexture = { 
     albedo: loader.load('./assets/texturas/Grid/vented-metal-panel1_albedo.png'),
     ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
@@ -110,7 +139,7 @@ const alienTexture = {
 // 4. Definimos variables y la función que va a crear el material al cargar las texturas.
 var iceMaterial;
 var paperMaterial;
-var gridMaterial; // <--- NUEVA VARIABLE
+var gridMaterial;
 
 function createMaterial() {
     // Material de Hielo
@@ -139,8 +168,8 @@ function createMaterial() {
         //wireframe: true,
     });
 
-    // Material de Rejilla/Metal (NUEVO)
-    gridMaterial = new THREE.MeshStandardMaterial({ // <--- NUEVO MATERIAL
+    // Material de Rejilla/Metal
+    gridMaterial = new THREE.MeshStandardMaterial({ 
         map: gridTexture.albedo,
         aoMap: gridTexture.ao,
         metalnessMap: gridTexture.metalness,
@@ -160,7 +189,7 @@ function createMaterial() {
 function setupMaterialSwitching() {
     const iceButton = document.getElementById('iceButton');
     const paperButton = document.getElementById('paperButton');
-    const gridButton = document.getElementById('gridButton'); // <--- NUEVO BOTÓN
+    const gridButton = document.getElementById('gridButton'); 
 
     iceButton.addEventListener('click', () => {
         if (iceMaterial) {
@@ -177,7 +206,7 @@ function setupMaterialSwitching() {
     });
     
     // Lógica para el botón de la rejilla (Grid)
-    gridButton.addEventListener('click', () => { // <--- NUEVO LISTENER
+    gridButton.addEventListener('click', () => { 
         if (gridMaterial) {
             mesh.material = gridMaterial;
             console.log("Material cambiado a Rejilla.");
