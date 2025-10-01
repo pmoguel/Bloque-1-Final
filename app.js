@@ -11,27 +11,25 @@ canvas.height = window.innerHeight;
 // 3. Configurar escena 3D.
 const scene = new THREE.Scene();
 
-// 3.0.1 AÑADIR COLOR DE FONDO Y NIEBLA <--- MODIFICADO
-const initialBgColor = 0x0a0c2c; // Color original del fondo (#0a0c2c)
+const initialBgColor = 0x0a0c2c; 
 scene.background = new THREE.Color(initialBgColor);
-scene.fog = new THREE.Fog(initialBgColor, 5, 20); // Niebla sutil que coincide con el fondo
+scene.fog = new THREE.Fog(initialBgColor, 5, 20);
 
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.width, canvas.height);
-renderer.setClearColor(initialBgColor); // Se mantiene para compatibilidad, aunque 'scene.background' es más común
+renderer.setClearColor(initialBgColor);
 const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
 
-// 3.0.2 SISTEMA DE PARTÍCULAS PARA EL FONDO (NUEVO)
+// 3.0.2 SISTEMA DE PARTÍCULAS PARA EL FONDO
 const particleCount = 1000;
 const particleGeometry = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
 const particleSize = 0.05;
 
 for (let i = 0; i < particleCount; i++) {
-    // Posiciona las partículas aleatoriamente en un cubo grande alrededor de la escena
-    positions[i * 3] = (Math.random() - 0.5) * 50; // x: -25 a 25
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 50; // y: -25 a 25
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 50; // z: -25 a 25
+    positions[i * 3] = (Math.random() - 0.5) * 50;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
 }
 
 particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -39,7 +37,7 @@ particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3
 const particleMaterial = new THREE.PointsMaterial({
     color: 0xcccccc,
     size: particleSize,
-    sizeAttenuation: true, // Las partículas se hacen más pequeñas en la distancia
+    sizeAttenuation: true,
 });
 
 const particles = new THREE.Points(particleGeometry, particleMaterial);
@@ -51,7 +49,7 @@ const geo = new THREE.TorusGeometry( 1, 0.35, 80, 160 );
 
 const material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
-    // wireframe: true,
+// 	wireframe: true,
 });
 const mesh = new THREE.Mesh(geo, material);
 scene.add(mesh);
@@ -120,19 +118,27 @@ const gridTexture = {
     ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
     metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'),
     normal: loader.load('./assets/texturas/Grid/vented-metal-panel1_normal-ogl.png'),
-    // No hay mapa de Roughness, lo dejamos comentado o usamos el mapa de Albedo como fallback si queremos.
     //roughness: loader.load('./assets/texturas/Grid/vented-metal-panel1_roughness.png'), 
     displacement: loader.load('./assets/texturas/Grid/vented-metal-panel1_height.png'),
 };
 
 /*
+const tex = {
+	albedo: loader.load('./assets/texturas/Grid/vented-metal-panel1_albedo.png'),
+	ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
+	metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'),
+	normal: loader.load('./assets/texturas/Grid/vented-metal-panel1_normal-ogl.png'),
+	//roughness: loader.load('./assets/texturas/Grid/vented-metal-panel1_roughness.png'),
+	displacement: loader.load('./assets/texturas/Grid/vented-metal-panel1_height.png'),
+};
+
 const alienTexture = {
-    albedo: loader.load('./assets/texturas/alien/alien-carniverous-plant_albedo.png'),
-    ao: loader.load('./assets/texturas/alien/alien-carniverous-plant_ao.png'),
-    metalness: loader.load('./assets/texturas/alien/alien-carniverous-plant_metallic.png'),
-    normal: loader.load('./assets/texturas/alien/alien-carniverous-plant_normal-ogl.png'),
-    roughness: loader.load('./assets/texturas/alien/alien-carniverous-plant_roughness.png'),
-    displacement: loader.load('./assets/texturas/alien/alien-carniverous-plant_height.png'),
+	albedo: loader.load('./assets/texturas/alien/alien-carniverous-plant_albedo.png'),
+	ao: loader.load('./assets/texturas/alien/alien-carniverous-plant_ao.png'),
+	metalness: loader.load('./assets/texturas/alien/alien-carniverous-plant_metallic.png'),
+	normal: loader.load('./assets/texturas/alien/alien-carniverous-plant_normal-ogl.png'),
+	roughness: loader.load('./assets/texturas/alien/alien-carniverous-plant_roughness.png'),
+	displacement: loader.load('./assets/texturas/alien/alien-carniverous-plant_height.png'),
 };
 */
 
@@ -142,7 +148,6 @@ var paperMaterial;
 var gridMaterial;
 
 function createMaterial() {
-    // Material de Hielo
     iceMaterial = new THREE.MeshStandardMaterial({
         map: iceTexture.albedo,
         aoMap: iceTexture.ao,
@@ -155,7 +160,6 @@ function createMaterial() {
         //wireframe: true,
     });
     
-    // Material de Papel
     paperMaterial = new THREE.MeshStandardMaterial({
         map: paperTexture.albedo,
         aoMap: paperTexture.ao,
@@ -168,24 +172,21 @@ function createMaterial() {
         //wireframe: true,
     });
 
-    // Material de Rejilla/Metal
     gridMaterial = new THREE.MeshStandardMaterial({ 
         map: gridTexture.albedo,
         aoMap: gridTexture.ao,
         metalnessMap: gridTexture.metalness,
         normalMap: gridTexture.normal,
-        roughness: 0.5, // Le damos un valor manual ya que no había mapa de Roughness cargado
+        roughness: 0.5,
         displacementMap: gridTexture.displacement,
         displacementScale: 0.5,
         side: THREE.FrontSide,
         //wireframe: true,
     });
 
-    // Asigna el material inicial
     mesh.material = iceMaterial; 
 }
 
-//// D) Lógica para cambiar de material con los botones. 
 function setupMaterialSwitching() {
     const iceButton = document.getElementById('iceButton');
     const paperButton = document.getElementById('paperButton');
@@ -205,7 +206,6 @@ function setupMaterialSwitching() {
         }
     });
     
-    // Lógica para el botón de la rejilla (Grid)
     gridButton.addEventListener('click', () => { 
         if (gridMaterial) {
             mesh.material = gridMaterial;

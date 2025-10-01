@@ -58,11 +58,10 @@ footer {
     bottom: 5vh;
     right: 2.2vh;
     width: 10vh;
-    /* ESTILOS AÑADIDOS PARA EL TEXTO */
-    font-size: 3vh; /* Ajuste para que el texto sea visible */
+    font-size: 3vh; 
     text-align: right;
     line-height: 1;
-    text-decoration: none; /* Quitar el subrayado típico del enlace */
+    text-decoration: none; 
 }
 
 .materialSwitch {
@@ -101,4 +100,30 @@ background-image: url('./assets/texturas/Grid/vented-metal-panel1_albedo.png');
     display: flex;
     flex-direction: column;
     gap: 2vh;
+}
+
+.instructions {
+    position: fixed;
+    top: 50%; 
+    right: 2vh;
+    transform: translateY(-50%);
+    
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 1.5vh 2.5vh; 
+    border-radius: 10px;
+    text-align: right;
+    color: aqua; 
+    font-size: 2.5vh; /* TAMAÑO AUMENTADO */
+    line-height: 1.4; 
+    z-index: 100; 
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); 
+}
+
+.instructions p {
+    margin: 0.2vh 0; 
+    color: aqua; 
+}
+
+.instructions p strong {
+    color: #00ffff; 
 }
