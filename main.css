@@ -58,6 +58,11 @@ footer {
     bottom: 5vh;
     right: 2.2vh;
     width: 10vh;
+    /* ESTILOS AÑADIDOS PARA EL TEXTO */
+    font-size: 3vh; /* Ajuste para que el texto sea visible */
+    text-align: right;
+    line-height: 1;
+    text-decoration: none; /* Quitar el subrayado típico del enlace */
 }
 
 .materialSwitch {
@@ -81,7 +86,7 @@ background-image: url('./assets/texturas/paper/wrinkled-paper-albedo.png');
 }
 
 #gridButton {
-background-image: url('./assets/texturas/Grid/vented-metal-panel1_albedo.png'); /* <--- NUEVO ESTILO */
+background-image: url('./assets/texturas/Grid/vented-metal-panel1_albedo.png'); 
 }
 
 #materials {
