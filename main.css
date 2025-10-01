@@ -73,23 +73,27 @@ footer {
 }
 
 #iceButton {
-background-image: url('./assets/texturas/ice/rock-snow-ice1-2k_Albedo.png'); ;
+background-image: url('./assets/texturas/ice/rock-snow-ice1-2k_Albedo.png');
 }
 
 #paperButton {
-background-image: url('./assets/texturas/paper/wrinkled-paper-albedo.png'); ;
+background-image: url('./assets/texturas/paper/wrinkled-paper-albedo.png');
+}
+
+#gridButton {
+background-image: url('./assets/texturas/Grid/vented-metal-panel1_albedo.png'); /* <--- NUEVO ESTILO */
 }
 
 #materials {
-  position: absolute;
-  top: 50%;
-  left: 2vh;
-  transform: translateY(-50%);
+    position: absolute;
+    top: 50%;
+    left: 2vh;
+    transform: translateY(-50%);
 }
 
 #materials ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2vh;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
 }

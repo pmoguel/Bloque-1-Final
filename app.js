@@ -17,11 +17,11 @@ const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1
 
 // 3.1 Configurar mesh.
 //const geo = new THREE.TorusKnotGeometry(1, 0.35, 128, 5, 2);
- const geo = new THREE.TorusGeometry( 1, 0.35, 80, 160 ); 
+const geo = new THREE.TorusGeometry( 1, 0.35, 80, 160 ); 
 
 const material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
- //   wireframe: true,
+    // wireframe: true,
 });
 const mesh = new THREE.Mesh(geo, material);
 scene.add(mesh);
@@ -45,20 +45,21 @@ scene.add(rimLight);
 const manager = new THREE.LoadingManager();
 
 manager.onStart = function (url, itemsLoaded, itemsTotal) {
-   console.log(`Iniciando carga de: ${url} (${itemsLoaded + 1}/${itemsTotal})`);
+    console.log(`Iniciando carga de: ${url} (${itemsLoaded + 1}/${itemsTotal})`);
 };
 
 manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-   console.log(`Cargando: ${url} (${itemsLoaded}/${itemsTotal})`);
+    console.log(`Cargando: ${url} (${itemsLoaded}/${itemsTotal})`);
 };
 
 manager.onLoad = function () {
-   console.log('✅ ¡Todas las texturas cargadas!');
-   createMaterial();
+    console.log('✅ ¡Todas las texturas cargadas!');
+    createMaterial();
+    setupMaterialSwitching(); 
 };
 
 manager.onError = function (url) {
-   console.error(`❌ Error al cargar: ${url}`);
+    console.error(`❌ Error al cargar: ${url}`);
 };
 
 // 2. "Texture loader" para nuestros assets.
@@ -67,125 +68,186 @@ const loader = new THREE.TextureLoader(manager);
 // 3. Cargamos texturas guardadas en el folder del proyecto.
 
 const iceTexture = {
-   albedo: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Albedo.png'),
-   ao: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_AO.png'),
-   metalness: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Metallic.png'),
-   normal: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Normal-ogl.png'),
-   roughness: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Roughness.png'),
-   displacement: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Height.png'),
+    albedo: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Albedo.png'),
+    ao: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_AO.png'),
+    metalness: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Metallic.png'),
+    normal: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Normal-ogl.png'),
+    roughness: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Roughness.png'),
+    displacement: loader.load('./assets/texturas/ice/rock-snow-ice1-2k_Height.png'),
 };
 
 const paperTexture = {
-   albedo: loader.load('./assets/texturas/paper/wrinkled-paper-albedo.png'),
-   ao: loader.load('./assets/texturas/paper/wrinkled-paper-ao.png'),
-   metalness: loader.load('./assets/texturas/paper/wrinkled-paper-metalness.png'),
-   normal: loader.load('./assets/texturas/paper/wrinkled-paper-normal-ogl.png'),
-   roughness: loader.load('./assets/texturas/paper/wrinkled-paper-roughness.png'),
-   displacement: loader.load('./assets/texturas/paper/wrinkled-paper-height.png'),
+    albedo: loader.load('./assets/texturas/paper/wrinkled-paper-albedo.png'),
+    ao: loader.load('./assets/texturas/paper/wrinkled-paper-ao.png'),
+    metalness: loader.load('./assets/texturas/paper/wrinkled-paper-metalness.png'),
+    normal: loader.load('./assets/texturas/paper/wrinkled-paper-normal-ogl.png'),
+    roughness: loader.load('./assets/texturas/paper/wrinkled-paper-roughness.png'),
+    displacement: loader.load('./assets/texturas/paper/wrinkled-paper-height.png'),
+};
+
+// <--- TEXTURAS DESCOMENTADAS Y RENOMBRADAS A gridTexture
+const gridTexture = { 
+    albedo: loader.load('./assets/texturas/Grid/vented-metal-panel1_albedo.png'),
+    ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
+    metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'),
+    normal: loader.load('./assets/texturas/Grid/vented-metal-panel1_normal-ogl.png'),
+    // No hay mapa de Roughness, lo dejamos comentado o usamos el mapa de Albedo como fallback si queremos.
+    //roughness: loader.load('./assets/texturas/Grid/vented-metal-panel1_roughness.png'), 
+    displacement: loader.load('./assets/texturas/Grid/vented-metal-panel1_height.png'),
 };
 
 /*
-const tex = {
-   albedo: loader.load('./assets/texturas/Grid/vented-metal-panel1_albedo.png'),
-   ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
-   metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'),
-   normal: loader.load('./assets/texturas/Grid/vented-metal-panel1_normal-ogl.png'),
-   //roughness: loader.load('./assets/texturas/Grid/vented-metal-panel1_roughness.png'),
-   displacement: loader.load('./assets/texturas/Grid/vented-metal-panel1_height.png'),
-};
-
 const alienTexture = {
-   albedo: loader.load('./assets/texturas/alien/alien-carniverous-plant_albedo.png'),
-   ao: loader.load('./assets/texturas/alien/alien-carniverous-plant_ao.png'),
-   metalness: loader.load('./assets/texturas/alien/alien-carniverous-plant_metallic.png'),
-   normal: loader.load('./assets/texturas/alien/alien-carniverous-plant_normal-ogl.png'),
-   roughness: loader.load('./assets/texturas/alien/alien-carniverous-plant_roughness.png'),
-   displacement: loader.load('./assets/texturas/alien/alien-carniverous-plant_height.png'),
+    albedo: loader.load('./assets/texturas/alien/alien-carniverous-plant_albedo.png'),
+    ao: loader.load('./assets/texturas/alien/alien-carniverous-plant_ao.png'),
+    metalness: loader.load('./assets/texturas/alien/alien-carniverous-plant_metallic.png'),
+    normal: loader.load('./assets/texturas/alien/alien-carniverous-plant_normal-ogl.png'),
+    roughness: loader.load('./assets/texturas/alien/alien-carniverous-plant_roughness.png'),
+    displacement: loader.load('./assets/texturas/alien/alien-carniverous-plant_height.png'),
 };
 */
 
 // 4. Definimos variables y la función que va a crear el material al cargar las texturas.
 var iceMaterial;
+var paperMaterial;
+var gridMaterial; // <--- NUEVA VARIABLE
 
 function createMaterial() {
-   iceMaterial = new THREE.MeshStandardMaterial({
-       map: iceTexture.albedo,
-       aoMap: iceTexture.ao,
-       metalnessMap: iceTexture.metalness,
-       normalMap: iceTexture.normal,
-       roughnessMap: iceTexture.roughness,
-       displacementMap: iceTexture.displacement,
-       displacementScale: 0.5,
-       side: THREE.FrontSide,
-       //wireframe: true,
-   });
+    // Material de Hielo
+    iceMaterial = new THREE.MeshStandardMaterial({
+        map: iceTexture.albedo,
+        aoMap: iceTexture.ao,
+        metalnessMap: iceTexture.metalness,
+        normalMap: iceTexture.normal,
+        roughnessMap: iceTexture.roughness,
+        displacementMap: iceTexture.displacement,
+        displacementScale: 0.5,
+        side: THREE.FrontSide,
+        //wireframe: true,
+    });
+    
+    // Material de Papel
+    paperMaterial = new THREE.MeshStandardMaterial({
+        map: paperTexture.albedo,
+        aoMap: paperTexture.ao,
+        metalnessMap: paperTexture.metalness,
+        normalMap: paperTexture.normal,
+        roughnessMap: paperTexture.roughness,
+        displacementMap: paperTexture.displacement,
+        displacementScale: 0.5,
+        side: THREE.FrontSide,
+        //wireframe: true,
+    });
 
-   mesh.material = iceMaterial;
+    // Material de Rejilla/Metal (NUEVO)
+    gridMaterial = new THREE.MeshStandardMaterial({ // <--- NUEVO MATERIAL
+        map: gridTexture.albedo,
+        aoMap: gridTexture.ao,
+        metalnessMap: gridTexture.metalness,
+        normalMap: gridTexture.normal,
+        roughness: 0.5, // Le damos un valor manual ya que no había mapa de Roughness cargado
+        displacementMap: gridTexture.displacement,
+        displacementScale: 0.5,
+        side: THREE.FrontSide,
+        //wireframe: true,
+    });
+
+    // Asigna el material inicial
+    mesh.material = iceMaterial; 
+}
+
+//// D) Lógica para cambiar de material con los botones. 
+function setupMaterialSwitching() {
+    const iceButton = document.getElementById('iceButton');
+    const paperButton = document.getElementById('paperButton');
+    const gridButton = document.getElementById('gridButton'); // <--- NUEVO BOTÓN
+
+    iceButton.addEventListener('click', () => {
+        if (iceMaterial) {
+            mesh.material = iceMaterial;
+            console.log("Material cambiado a Hielo.");
+        }
+    });
+
+    paperButton.addEventListener('click', () => {
+        if (paperMaterial) {
+            mesh.material = paperMaterial;
+            console.log("Material cambiado a Papel.");
+        }
+    });
+    
+    // Lógica para el botón de la rejilla (Grid)
+    gridButton.addEventListener('click', () => { // <--- NUEVO LISTENER
+        if (gridMaterial) {
+            mesh.material = gridMaterial;
+            console.log("Material cambiado a Rejilla.");
+        }
+    });
 }
 
 //// B) Rotación al scrollear.
 // 1. Crear un objeto con la data referente al SCROLL para ocuparla en todos lados.
 var scroll = {
-   y: 0,
-   lerpedY: 0,
-   speed: 0.005,
-   cof: 0.07
+    y: 0,
+    lerpedY: 0,
+    speed: 0.005,
+    cof: 0.07
 };
 
 // 2. Escuchar el evento scroll y actualizar el valor del scroll.
 function updateScrollData(eventData) {
-   scroll.y += eventData.deltaY * scroll.speed;
+    scroll.y += eventData.deltaY * scroll.speed;
 }
 
 window.addEventListener("wheel", updateScrollData);
 
 // 3. Aplicar el valor del scroll a la rotación del mesh. (en el loop de animación)
 function updateMeshRotation() {
-   mesh.rotation.y = scroll.lerpedY;
+    mesh.rotation.y = scroll.lerpedY;
 }
 
 // 5. Vamos a suavizar un poco el valor de rotación para que los cambios de dirección sean menos bruscos.
 function lerpScrollY() {
-   scroll.lerpedY += (scroll.y - scroll.lerpedY) * scroll.cof;
+    scroll.lerpedY += (scroll.y - scroll.lerpedY) * scroll.cof;
 }
 
 
 //// C) Movimiento de cámara con mouse (fricción) aka "Gaze Camera".
 // 1. Crear un objeto con la data referente al MOUSE para ocuparla en todos lados.
 var mouse = {
-   x: 0,
-   y: 0,
-   normalOffset: {
-       x: 0,
-       y: 0
-   },
-   lerpNormalOffset: {
-       x: 0,
-       y: 0
-   },
+    x: 0,
+    y: 0,
+    normalOffset: {
+        x: 0,
+        y: 0
+    },
+    lerpNormalOffset: {
+        x: 0,
+        y: 0
+    },
 
-   cof: 0.07,
-   gazeRange: {
-       x: 15,
-       y: 3
-   }
+    cof: 0.07,
+    gazeRange: {
+        x: 15,
+        y: 3
+    }
 }
 // 2. Leer posición del mouse y calcular distancia del mouse al centro.
 function updateMouseData(eventData) {
-   updateMousePosition(eventData);
-   calculateNormalOffset();
+    updateMousePosition(eventData);
+    calculateNormalOffset();
 }
 function updateMousePosition(eventData) {
-   mouse.x = eventData.clientX;
-   mouse.y = eventData.clientY;
+    mouse.x = eventData.clientX;
+    mouse.y = eventData.clientY;
 }
 function calculateNormalOffset() {
-   let windowCenter = {
-       x: canvas.width / 2,
-       y: canvas.height / 2,
-   }
-   mouse.normalOffset.x = ( (mouse.x - windowCenter.x) / canvas.width ) * 2;
-   mouse.normalOffset.y = ( (mouse.y - windowCenter.y) / canvas.height ) * 2;
+    let windowCenter = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+    }
+    mouse.normalOffset.x = ( (mouse.x - windowCenter.x) / canvas.width ) * 2;
+    mouse.normalOffset.y = ( (mouse.y - windowCenter.y) / canvas.height ) * 2;
 }
 
 
@@ -193,16 +255,16 @@ function calculateNormalOffset() {
 // 1. Incrementar gradualmente el valor de la distancia que vamos a usar para animar y lo guardamos en otro atributo. (en el loop de animación)
 
 function lerpDistanceToCenter() {
-   mouse.lerpNormalOffset.x += (mouse.normalOffset.x - mouse.lerpNormalOffset.x) * mouse.cof;
-   mouse.lerpNormalOffset.y += (mouse.normalOffset.y - mouse.lerpNormalOffset.y) * mouse.cof;
+    mouse.lerpNormalOffset.x += (mouse.normalOffset.x - mouse.lerpNormalOffset.x) * mouse.cof;
+    mouse.lerpNormalOffset.y += (mouse.normalOffset.y - mouse.lerpNormalOffset.y) * mouse.cof;
 }
 
 window.addEventListener("mousemove", updateMouseData);
 
 // 3. Aplicar valor calculado a la posición de la cámara. (en el loop de animación)
 function updateCameraPosition() {
-   camera.position.x = mouse.lerpNormalOffset.x * mouse.gazeRange.x;
-   camera.position.y = -mouse.lerpNormalOffset.y * mouse.gazeRange.y;
+    camera.position.x = mouse.lerpNormalOffset.x * mouse.gazeRange.x;
+    camera.position.y = -mouse.lerpNormalOffset.y * mouse.gazeRange.y;
 }
 ///////// FIN DE LA CLASE.
 
@@ -216,10 +278,10 @@ function animate() {
     lerpScrollY();
     updateMeshRotation();
 
-   lerpDistanceToCenter();
+    lerpDistanceToCenter();
     updateCameraPosition();
-  camera.lookAt(mesh.position);
-      renderer.render(scene, camera);
+    camera.lookAt(mesh.position);
+    renderer.render(scene, camera);
 }
 
 animate();
