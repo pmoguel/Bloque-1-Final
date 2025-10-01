@@ -11,7 +11,7 @@ canvas.height = window.innerHeight;
 // 3. Configurar escena 3D.
 const scene = new THREE.Scene();
 
-const initialBgColor = 0x0a0c2c; 
+const initialBgColor = 0x0c2c0a; 
 scene.background = new THREE.Color(initialBgColor);
 scene.fog = new THREE.Fog(initialBgColor, 5, 20);
 
@@ -56,11 +56,11 @@ scene.add(mesh);
 mesh.position.z = -7;
 
 // 3.2 Crear luces.
-const frontLight = new THREE.PointLight("#ffffff", 300, 100);
+const frontLight = new THREE.PointLight("#ff00ff", 300, 100);
 frontLight.position.set(7, 3, 3);
 scene.add(frontLight);
 
-const rimLight = new THREE.PointLight("#0066ff", 50, 100);
+const rimLight = new THREE.PointLight("#00ffff", 50, 100);
 rimLight.position.set(-7, -3, -7);
 scene.add(rimLight);
 
@@ -116,7 +116,7 @@ const paperTexture = {
 const gridTexture = { 
     albedo: loader.load('./assets/texturas/Grid/vented-metal-panel1_albedo.png'),
     ao: loader.load('./assets/texturas/Grid/vented-metal-panel1_ao.png'),
-    metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'),
+    // metalness: loader.load('./assets/texturas/Grid/vented-metal-panel1_metallic.png'), 
     normal: loader.load('./assets/texturas/Grid/vented-metal-panel1_normal-ogl.png'),
     //roughness: loader.load('./assets/texturas/Grid/vented-metal-panel1_roughness.png'), 
     displacement: loader.load('./assets/texturas/Grid/vented-metal-panel1_height.png'),
@@ -175,7 +175,7 @@ function createMaterial() {
     gridMaterial = new THREE.MeshStandardMaterial({ 
         map: gridTexture.albedo,
         aoMap: gridTexture.ao,
-        metalnessMap: gridTexture.metalness,
+        metalness: 1.0, 
         normalMap: gridTexture.normal,
         roughness: 0.5,
         displacementMap: gridTexture.displacement,
