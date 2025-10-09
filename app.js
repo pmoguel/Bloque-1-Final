@@ -93,6 +93,8 @@ manager.onError = function (url) {
 // 2. "Texture loader" para nuestros assets.
 const loader = new THREE.TextureLoader(manager);
 
+const cubeTexLoader = new THREE.CubeTextureLoader(manager);
+
 // 3. Cargamos texturas guardadas en el folder del proyecto.
 
 const iceTexture = {
@@ -142,6 +144,14 @@ const alienTexture = {
 };
 */
 
+
+const envMap = cubeTexLoader.load([
+   './assets/texturas/environment/posx.jpg', './assets/texturas/environment/negx.jpg',   // +X, -X
+   './assets/texturas/environment/posy.jpg', './assets/texturas/environment/negy.jpg',   // +Y, -Y
+   './assets/texturas/environment/posz.jpg', './assets/texturas/environment/negz.jpg'    // +Z, -Z
+]);
+scene.background = envMap;
+
 // 4. Definimos variables y la función que va a crear el material al cargar las texturas.
 var iceMaterial;
 var paperMaterial;
@@ -149,6 +159,10 @@ var gridMaterial;
 
 function createMaterial() {
     iceMaterial = new THREE.MeshStandardMaterial({
+               envMap: envMap,
+       metalness: 0.8,
+       roughness: 0.4,
+
         map: iceTexture.albedo,
         aoMap: iceTexture.ao,
         metalnessMap: iceTexture.metalness,
@@ -161,11 +175,14 @@ function createMaterial() {
     });
     
     paperMaterial = new THREE.MeshStandardMaterial({
+               envMap: envMap,
+       metalness: 0.8,
+       roughness: 0.4,
         map: paperTexture.albedo,
         aoMap: paperTexture.ao,
         metalnessMap: paperTexture.metalness,
         normalMap: paperTexture.normal,
-        roughnessMap: paperTexture.roughness,
+        //roughnessMap: paperTexture.roughness,
         displacementMap: paperTexture.displacement,
         displacementScale: 0.5,
         side: THREE.FrontSide,
@@ -173,11 +190,14 @@ function createMaterial() {
     });
 
     gridMaterial = new THREE.MeshStandardMaterial({ 
+        envMap: envMap,
+       metalness: 1,
+       roughness: 0,
         map: gridTexture.albedo,
         aoMap: gridTexture.ao,
-        metalness: 1.0, 
+        //metalness: 1.0, 
         normalMap: gridTexture.normal,
-        roughness: 0.5,
+        //roughness: 0.5,
         displacementMap: gridTexture.displacement,
         displacementScale: 0.5,
         side: THREE.FrontSide,
@@ -323,4 +343,35 @@ canvas.addEventListener("click", () => {
         duration: 1.2,
         ease: "bounce.out"
     });
+});
+
+// RESIZE CANVAS.
+// 1. Crear una función con las instrucciones para actualizar el tamaño de nuestro canvas.
+
+function updateCanvasSize() {
+   canvas.width = window.innerWidth;
+   canvas.height = window.innerHeight;
+}
+
+// 2. Crear otra función para actualizar la resolución de nuestro renderizador.
+
+function updateRenderer() {
+   renderer.setSize(canvas.width, canvas.height);
+
+   // actualizar pixel ratio (para pantallas retina, pero limitar a 2 para rendimiento)
+   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+}
+
+// 3. Crear otra función para actualizar la relación aspecto de la cámara.
+
+function updateCameraAspect() {
+   camera.aspect = canvas.width / canvas.height;
+   camera.updateProjectionMatrix();
+}
+// 4. Definir un event listener al “resize” para ejecutar las 3 funciones que creamos en los pasos anteriores.
+
+window.addEventListener("resize", function() {
+   updateCanvasSize();
+   updateRenderer();
+   updateCameraAspect();
 });
